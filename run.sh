@@ -1,7 +1,7 @@
 #!/bin/sh
-set -a
-source .env
-set +a
+# set -a
+# source .env
+# set +a
 ARG1=$1
 
 # 数据库路径
