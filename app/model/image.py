@@ -1,0 +1,49 @@
+from sqlalchemy import Integer, String, DateTime,Text,Float,Index
+from sqlalchemy.orm import Mapped,mapped_column
+from sqlalchemy.sql import func
+from .conn import Base
+from sqlalchemy.dialects.postgresql import JSONB
+from datetime import datetime
+from sqlalchemy import select
+from .conn import get_db
+
+class ImageModel(Base):
+    __tablename__ = "zp_image"
+    __table_args__ = (
+        # uid + hash组合索引
+        Index("idx_uid_hash", "uid", "hash"),
+        Index("idx_uid_album_id", "uid", "album_id"),
+        {"comment": "图片表"},
+    )
+
+    id:Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    uid:Mapped[str|None] = mapped_column(String(32), nullable=True, index=True, comment="用户ID")
+    imgid:Mapped[str] = mapped_column(String(16), nullable=False, unique=True, index=True, comment="图片唯一ID")
+    path:Mapped[str] = mapped_column(String(64), nullable=False, comment="图片存储路径")
+    thumb_path:Mapped[str|None] = mapped_column(String(64), nullable=True, comment="缩略图存储路径")
+    storage_slug:Mapped[str] = mapped_column(String(64), nullable=False, comment="存储策略slug")
+    # 图片上传时间
+    upload_at:Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now(), comment="上传时间")
+    album_id:Mapped[int] = mapped_column(Integer, default=0,nullable=False, comment="相册ID")
+    mime_type:Mapped[str] = mapped_column(String(32), nullable=False, comment="图片MIME类型")
+    width:Mapped[int] = mapped_column(Integer, nullable=False, comment="图片宽度")
+    height:Mapped[int] = mapped_column(Integer, nullable=False, comment="图片高度")
+    ext:Mapped[str] = mapped_column(String(16), nullable=False, comment="图片扩展名")
+    size:Mapped[int] = mapped_column(Integer, nullable=False, comment="图片大小，存储字节")
+    filename:Mapped[str] = mapped_column(String(255), nullable=False, comment="图片原始文件名")
+    # 是否是色情图片：0：未识别：1：识别中，2：正常图片：3：色情图片，4：不需要识别，5：识别失败
+    is_nsfw:Mapped[int] = mapped_column(Integer, default=0, nullable=False, comment="是否NSFW色情图片")
+    # 是否是二维码:0：未识别：1：识别中，2：无二维码：3：二维码，4：不需要识别，5：无法识别
+    is_qrcode:Mapped[int] = mapped_column(Integer, default=0, nullable=False, comment="是否二维码图片")
+    upload_ip: Mapped[str] = mapped_column(String(45), nullable=False, comment="上传者IP地址")
+    # hash，使用xxhash.xxh3_64()算法，考虑是否移到主表
+    hash:Mapped[str] = mapped_column(String(16), nullable=False, index=True, comment="图片hash值")
+
+    # 写一个函数，根据uid和hash查询单张图片
+    @classmethod
+    async def get_by_uid_and_hash(cls, uid: str, hash: str):
+        async with get_db() as db:
+            result = await db.execute(
+                select(cls).where(cls.uid == uid, cls.hash == hash)
+            )
+            return result.scalars().first()
