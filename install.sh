@@ -17,7 +17,7 @@ install_python_deps(){
     source myenv/bin/activate
     cd ${WORKDIR}
     # 安装 Pillow-SIMD 替代 Pillow
-    CC="cc -mavx2" pip install -U --force-reinstall pillow-simd
+    CC="cc -mavx2" pip3 install -U --force-reinstall pillow-simd
     pip3 install -r requirements.txt
 }
 
