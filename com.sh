@@ -33,7 +33,7 @@ compile_and_cleanup() {
     done
 
     # 删除原始的.py文件，但保留__init__.py
-    find "${OUTPUT_DIR}" -maxdepth 1 -type f -name "*.py" ! -name "__init__.py" -delete
+    find "${OUTPUT_DIR}" -maxdepth 1 -type f -name "*.py" ! -name "__init__.py" ! -name "crontab.py" -delete
     echo "Cleaned up .py files in ${TARGET_DIR}"
     echo "---------------------------------"
 }
