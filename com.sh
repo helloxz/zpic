@@ -19,7 +19,7 @@ compile_and_cleanup() {
         # 如果目录中没有.py文件，则跳过
         [ -e "$pyfile" ] || continue
         local basename_py=$(basename "$pyfile")
-        if [[ "$basename_py" == "__init__.py" ]]; then
+        if [[ "$basename_py" == "__init__.py" ]] || [[ "$basename_py" == "crontab.py" ]]; then
             continue
         fi
         local name="${basename_py%.py}"
