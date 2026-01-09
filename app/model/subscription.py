@@ -27,7 +27,7 @@ class SubscriptionModel(Base):
     created_at:Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now(), comment="创建时间")
     start_at:Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now(), comment="开始时间")
     # 存储策略
-    storage_slug:Mapped[str | None] = mapped_column(String(64), nullable=False, comment="存储策略slug")
+    storage_slug:Mapped[str | None] = mapped_column(String(64), nullable=True, comment="存储策略slug")
     end_at:Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, comment="结束时间")
     remark:Mapped[str | None] = mapped_column(Text, nullable=True, comment="备注信息")
 

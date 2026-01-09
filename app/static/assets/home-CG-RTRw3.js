@@ -1,1 +1,0 @@
-import{_ as s,W as t,Y as a,X as o}from"./index.2026010805.js";const n={},r={class:"home"};function c(d,e){return a(),t("div",r,[...e[0]||(e[0]=[o("h1",null,"Welcome to ZAdmin",-1),o("p",null,"This is the home page of your admin dashboard.",-1)])])}const l=s(n,[["render",c],["__scopeId","data-v-64d450e1"]]);export{l as default};

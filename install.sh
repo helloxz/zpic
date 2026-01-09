@@ -16,9 +16,6 @@ install_python_deps(){
     cd ${WORKDIR}
     python3 -m venv myenv
     source myenv/bin/activate
-    ls -al
-    ls -al /opt/zpic/myenv/bin/
-    echo "当前路径是: $(pwd)"
     # 安装 Pillow-SIMD 替代 Pillow
     CC="cc -mavx2" /opt/zpic/myenv/bin/python -m pip install -U --force-reinstall pillow-simd
     /opt/zpic/myenv/bin/python -m pip install -r app/requirements.txt

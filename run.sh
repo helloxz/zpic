@@ -1,11 +1,16 @@
 #!/bin/sh
-# set -a
-# source .env
-# set +a
 ARG1=$1
 
 # 数据库路径
 DB_PATH="/opt/zhiyuan/app/data/db"
+
+# 检查.env文件是否存在，存在则导入
+if [ -f .env ]; then
+    set -a
+    source .env
+    set +a
+    echo "import env from .env file"
+fi
 
 # 启动redis
 runRedis(){
@@ -31,12 +36,12 @@ runScheduler(){
     # 创建日志目录
     mkdir -p ./app/data/logs
     # 检查任务中是否存在app.utils.cron的进程，如果不存在则启动
-    pgrep -f "python3 -m app.utils.cron" > /dev/null
+    pgrep -f "python3 -m app.utils.crontab" > /dev/null
     if [ $? -eq 0 ]; then
         echo "Scheduler is already running."
     else
         # 后台启动任务
-        nohup python3 -m app.utils.cron > ./app/data/logs/app_cron.log 2>&1 &
+        nohup python3 -m app.utils.crontab > ./app/data/logs/app_crontab.log 2>&1 &
     fi
 }
 
@@ -51,7 +56,7 @@ runMain(){
     fi
     # 启动主进程
     source myenv/bin/activate
-    # runScheduler
+    runScheduler
     # 执行数据库迁移
     alembic upgrade head
     uvicorn app.main:app --workers ${WORKERS} --host 0.0.0.0 --port 2080
@@ -66,7 +71,7 @@ elif [ "$ARG1" = "dev" ]; then
     source myenv/bin/activate
     # 执行数据库迁移
     # alembic upgrade head
-    # runScheduler
+    runScheduler
     uvicorn app.main:app --reload --host 0.0.0.0 --port 2080
 else
     echo "Unknown argument: $ARG1"

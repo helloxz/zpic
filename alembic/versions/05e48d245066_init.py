@@ -1,8 +1,8 @@
 """init
 
-Revision ID: 1fc73af35db9
+Revision ID: 05e48d245066
 Revises: 
-Create Date: 2026-01-08 11:28:24.003381
+Create Date: 2026-01-08 20:15:39.676410
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = '1fc73af35db9'
+revision: str = '05e48d245066'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -182,7 +182,7 @@ def upgrade() -> None:
     sa.Column('order_id', sa.String(length=32), nullable=True, comment='关联订单ID'),
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False, comment='创建时间'),
     sa.Column('start_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False, comment='开始时间'),
-    sa.Column('storage_slug', sa.String(length=64), nullable=False, comment='存储策略slug'),
+    sa.Column('storage_slug', sa.String(length=64), nullable=True, comment='存储策略slug'),
     sa.Column('end_at', sa.DateTime(timezone=True), nullable=False, comment='结束时间'),
     sa.Column('remark', sa.Text(), nullable=True, comment='备注信息'),
     sa.PrimaryKeyConstraint('id'),
