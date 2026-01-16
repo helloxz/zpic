@@ -26,7 +26,7 @@ class StorageModel(Base):
     storage_type:Mapped[str] = mapped_column(String(32), nullable=False, comment="存储类型，如s3、minio等")
     domain :Mapped[str] = mapped_column(String(256), nullable=False, comment="存储访问域名")
     extra_domains:Mapped[list|None] = mapped_column(JSONB,default=[], nullable=True, comment="额外访问域名列表")
-    is_default:Mapped[bool] = mapped_column(Integer, default=0, nullable=False, comment="是否默认存储，0否，1是")
+    is_default:Mapped[int] = mapped_column(Integer, default=0, nullable=False, comment="是否默认存储，0否，1是")
     status:Mapped[int] = mapped_column(Integer, default=1, nullable=False, comment="存储状态，0禁用，1启用")
     config:Mapped[dict|None] = mapped_column(JSONB, nullable=True, comment="扩展参数，保留用")
     # 创建时间

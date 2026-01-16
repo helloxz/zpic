@@ -22,6 +22,8 @@ from app.model.subscription import SubscriptionModel
 from app.model.sys_option import SysOptionModel
 from app.model.user_config import UserConfigModel
 from app.model.user import UserModel
+from app.model.login_log import LoginLogModel
+from app.model.page import PageModel
 
 # 强制转为同步 URL（如果原 URL 是 async 的）
 sync_database_url = SQLALCHEMY_DATABASE_URL

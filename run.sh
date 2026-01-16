@@ -59,7 +59,7 @@ runMain(){
     runScheduler
     # 执行数据库迁移
     alembic upgrade head
-    uvicorn app.main:app --workers ${WORKERS} --host 0.0.0.0 --port 2080
+    uvicorn app.main:app --workers ${WORKERS} --host 0.0.0.0 --port 2080 --loop uvloop --http httptools
 }
 
 # 获取第一个参数，如果不存在，则执行下面的命令，如果为dev则执行另外的命令

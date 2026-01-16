@@ -10,6 +10,7 @@ from collections import defaultdict
 import asyncio
 from .redis import create_redis_pool, close_redis_pool
 from app.utils.logger import logger
+from app.model.login_log import LoginLogModel
 
 class TaskScheduler:
     def __init__(self):
@@ -22,6 +23,8 @@ class TaskScheduler:
         await create_redis_pool()
         # 每隔1分钟执行一次
         self.scheduler.add_job(self.delete_images, 'interval', minutes=1)
+        # 每天凌晨1点执行一次清理登录日志
+        self.scheduler.add_job(self.clean_login_logs, 'cron', hour=1, minute=0)
         # 关键：启动调度器
         self.scheduler.start()
         # print("🕒 调度器已启动")
@@ -121,6 +124,19 @@ class TaskScheduler:
 
             total_deleted = sum(counts)
             print(f"✅ 成功删除 {total_deleted} 张图片")
+    # 清理3个月以前的登录日志
+    async def clean_login_logs(self):
+        async with get_db() as db:
+            result = await db.execute(
+                delete(LoginLogModel).where(
+                    LoginLogModel.login_at < func.now() - func.interval('90 days')
+                )
+            )
+            await db.commit()
+            deleted_count = result.rowcount # type: ignore
+            logger.info(f"✅ 成功删除 {deleted_count} 条登录日志")
+            print(f"✅ 成功删除 {deleted_count} 条登录日志")
+
 
 
 # 全局单例

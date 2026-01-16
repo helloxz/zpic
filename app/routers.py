@@ -14,6 +14,7 @@ from app.api.pay import PayHandler
 from app.api.admin.order import OrderHandler
 from app.api.html import HtmlHandler
 from app.api.test import TestHandler
+from app.api.admin.page import PageHandler
 
 index_handler = IndexHandler()
 user_handler = UserHandler()
@@ -29,11 +30,12 @@ plan_handler = PlanHandler()
 pay_handler = PayHandler()
 order_handler = OrderHandler()
 html_andler = HtmlHandler()
+page_handler = PageHandler()
 test_handler = TestHandler()
 router = APIRouter()
 
 router.get("/test/en")(test_handler.en)
-router.get("/test/de")(sys_option_handler.get_license_info)
+# router.get("/test/de")(sys_option_handler.get_license_info)
 
 # 用户请求邮箱验证码
 router.post("/api/get_email_code")(user_handler.get_email_code)
@@ -53,7 +55,12 @@ router.post("/api/pay/notify")(pay_handler.notify)
 # 管理员初始化
 router.post("/api/init_admin")(user_handler.init_admin)
 # 获取站点信息
-router.get("/api/site_info")(sys_option_handler.get_site_info)
+# router.get("/api/site_info")(sys_option_handler.get_site_info)
+# 获取公共配置
+router.get("/api/get_public_config")(sys_option_handler.get_public_config)
+# 获取单个图片信息
+router.post("/api/image_info/{imgid}")(image_handler.get_image_by_imgid)
+
 '''
 管理员相关API
 '''
@@ -99,6 +106,19 @@ router.get("/api/admin/get_license")(sys_option_handler.get_license_info)
 router.post("/api/admin/save_license")(sys_option_handler.save_license_info)
 # 移除授权信息
 router.post("/api/admin/remove_license")(sys_option_handler.remove_license_info)
+# 添加或更新页面
+router.post("/api/admin/set_page")(page_handler.set_page)
+# 获取页面列表
+router.post("/api/admin/get_pages")(page_handler.get_pages)
+router.post("/api/admin/get_page")(page_handler.admin_get_page)
+router.post("/api/admin/delete_pages")(page_handler.delete_pages)
+# 发送测试邮件
+router.get("/api/admin/send_test_email")(test_handler.send_mail)
+# 获取系统信息
+router.get("/api/admin/get_sys_info")(sys_option_handler.get_sys_info)
+# 管理员批量禁用用户
+router.post("/api/admin/disable_users")(user_handler.disable_users)
+router.post("/api/admin/enable_users")(user_handler.enable_users)
 '''管理员相关API END'''
 
 
@@ -110,10 +130,15 @@ router.get("/")(html_andler.home)
 router.get("/user/{name:path}")(html_andler.home)
 router.get("/dashboard/{name:path}")(html_andler.home)
 router.get("/account/{name:path}")(html_andler.home)
+router.get("/i/{imgid:path}")(html_andler.i)
 router.get("/upload")(html_andler.home)
 router.get("/pricing")(html_andler.home)
 router.get("/pay/success")(html_andler.home)
-
+router.get("/api/sitemap")(html_andler.sitemap_txt)
+router.get("/img/{imgid:path}")(html_andler.img_redirect)
+router.post("/api/get/page")(page_handler.get_page_by_slug)
+router.get("/api/get/recent_pages")(page_handler.get_recent_pages)
+router.get("/page/{slug:path}")(html_andler.home)
 '''
 用户相关API
 '''
