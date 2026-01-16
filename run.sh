@@ -12,32 +12,6 @@ if [ -f .env ]; then
     echo "import env from .env file"
 fi
 
-if [ -f 1panel.env ]; then
-    set -a
-    source 1panel.env
-    set +a
-    echo "import env from .env file"
-fi
-
-# 启动redis
-runRedis(){
-    redis-server app/config/redis.conf --daemonize yes
-    # 检查 Redis 是否启动成功
-    if [ $? -eq 0 ]; then
-        echo "Redis started successfully."
-    else
-        echo "Failed to start Redis."
-        exit 1
-    fi
-}
-
-# 检查数据库路径是否存在，如果不存在则创建
-exist_db(){
-    if [ ! -d "$DB_PATH" ]; then
-        mkdir -p "$DB_PATH"
-    fi
-}
-
 # 启动定时任务
 runScheduler(){
     # 创建日志目录
@@ -63,9 +37,13 @@ runMain(){
     fi
     # 启动主进程
     source myenv/bin/activate
+    # 等待5s钟，确保数据库服务已启动
+    sleep 5
     runScheduler
     # 执行数据库迁移
     alembic upgrade head
+    # 等待1s钟，确保数据库迁移已完成
+    sleep 1
     uvicorn app.main:app --workers ${WORKERS} --host 0.0.0.0 --port 2080 --loop uvloop --http httptools
 }
 
