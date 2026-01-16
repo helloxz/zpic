@@ -12,6 +12,13 @@ if [ -f .env ]; then
     echo "import env from .env file"
 fi
 
+if [ -f 1panel.env ]; then
+    set -a
+    source 1panel.env
+    set +a
+    echo "import env from .env file"
+fi
+
 # 启动redis
 runRedis(){
     redis-server app/config/redis.conf --daemonize yes
