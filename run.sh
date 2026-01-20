@@ -37,8 +37,8 @@ runMain(){
     fi
     # 启动主进程
     source myenv/bin/activate
-    # 等待5s钟，确保数据库服务已启动
-    sleep 5
+    # 等待4s钟，确保数据库服务已启动
+    sleep 4
     runScheduler
     # 执行数据库迁移
     alembic upgrade head

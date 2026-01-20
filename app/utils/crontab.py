@@ -11,6 +11,7 @@ import asyncio
 from .redis import create_redis_pool, close_redis_pool
 from app.utils.logger import logger
 from app.model.login_log import LoginLogModel
+from app.api.upload import UploadHandler
 
 class TaskScheduler:
     def __init__(self):
@@ -51,10 +52,12 @@ class TaskScheduler:
         from app.api.admin.storage import StorageHandler
         from minio import Minio
         from minio.deleteobjects import DeleteObject
+        upload_handler = UploadHandler()
 
         try:
             storage_handler = StorageHandler()
             storage = await storage_handler.get_storage(slug=storage_slug)
+            style = upload_handler.get_storage_style(storage.endpoint)  # type: ignore
             client = Minio(
                 endpoint=storage.endpoint,  # type: ignore
                 access_key=storage.access_key,  # type: ignore
@@ -62,6 +65,8 @@ class TaskScheduler:
                 region=storage.region,  # type: ignore
                 secure=True,
             )
+            if style == "virtual":
+                client.enable_virtual_style_endpoint()
             objects_to_delete = [DeleteObject(task.path) for task in tasks]
             # MinIO remove_objects 返回生成器，需迭代消费以发现错误
             errors = await self._remove_objects_threadsafe(client, storage.bucket, objects_to_delete)  # type: ignore

@@ -15,6 +15,7 @@ from app.api.admin.order import OrderHandler
 from app.api.html import HtmlHandler
 from app.api.test import TestHandler
 from app.api.admin.page import PageHandler
+from app.api.token import TokenHandler
 
 index_handler = IndexHandler()
 user_handler = UserHandler()
@@ -32,6 +33,7 @@ order_handler = OrderHandler()
 html_andler = HtmlHandler()
 page_handler = PageHandler()
 test_handler = TestHandler()
+token_handler = TokenHandler()
 router = APIRouter()
 
 router.get("/test/en")(test_handler.en)
@@ -119,6 +121,8 @@ router.get("/api/admin/get_sys_info")(sys_option_handler.get_sys_info)
 # 管理员批量禁用用户
 router.post("/api/admin/disable_users")(user_handler.disable_users)
 router.post("/api/admin/enable_users")(user_handler.enable_users)
+# 管理员删除指定存储桶
+router.post("/api/admin/delete_storage")(storage_handler.delete_storage)
 '''管理员相关API END'''
 
 
@@ -177,3 +181,14 @@ router.get("/api/user/get_own_config")(user_config_handler.user_get_own_config)
 router.post("/api/user/update_own_config")(user_config_handler.user_update_own_config)
 # 导出表格数据
 router.post("/api/user/export_images")(image_handler.export_image_xlsx)
+# 获取token信息
+router.get("/api/user/get_tokens")(token_handler.get_tokens)
+# 更换token状态
+router.post("/api/user/change_token_status")(token_handler.change_token_status)
+# 更换token内容
+router.post("/api/user/change_token")(token_handler.change_token)
+
+### 特殊API
+router.post("/api/v3/upload")(upload_handler.upload_v3)
+router.get("/api/v3/album_list")(album_handler.v3_album_list)
+router.post("/api/v2/upload")(upload_handler.upload_v2)

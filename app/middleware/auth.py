@@ -9,14 +9,14 @@ from app.utils.verify import is_valid_token
 async def auth(request: Request, call_next: Callable):
     # 获取请求路径
     path = request.url.path
-    # 只对 /api/admin和/api/user开头的路径进行鉴权
-    if not path.startswith("/api/admin") and not path.startswith("/api/user"):
+    # 只对指定前缀路径进行鉴权
+    protected_prefixes = ("/api/admin", "/api/user")
+    if not any(path.startswith(p) for p in protected_prefixes):
         return await call_next(request)
 
     # 获取请求头中的token
     auth = request.headers.get("Authorization")
     if not auth:
-        
         return JSONResponse(status_code=401, content={"code": 401, "msg": "The token is invalid."})
     
     # token的格式是Bearer xxx

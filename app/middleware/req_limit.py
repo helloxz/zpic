@@ -69,3 +69,26 @@ async def incr_user_limit(prefix:str):
     if count == 1:
         await redis_client.expire(redis_key, timedelta(hours=24))
     return None
+
+# 安全的上传限制
+async def rate_upload_limit(uid: str, limit: int = 90) -> bool:
+    from datetime import datetime, timezone
+    """
+    原子化每分钟限流：入口调用一次即可，无需再调 incr。
+    返回 True 表示允许请求，False 表示超限。
+    """
+    # 生成带分钟时间戳的 key（UTC 时间，避免时区问题）
+    minute = datetime.now(timezone.utc).strftime("%Y%m%d%H%M")
+    redis_key = f"LIMIT:UPLOAD:{uid}:{minute}"
+    
+    redis_client = await get_redis_client()
+    
+    # 原子自增并获取新值
+    new_count = await redis_client.incr(redis_key)
+    
+    # 首次访问时设置过期（70秒足够覆盖当前分钟+缓冲）
+    if new_count == 1:
+        await redis_client.expire(redis_key, 70)
+    
+    # 立即判断是否超限
+    return new_count <= limit
