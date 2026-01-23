@@ -123,6 +123,10 @@ router.post("/api/admin/disable_users")(user_handler.disable_users)
 router.post("/api/admin/enable_users")(user_handler.enable_users)
 # 管理员删除指定存储桶
 router.post("/api/admin/delete_storage")(storage_handler.delete_storage)
+# 批量修改图片状态
+router.post("/api/admin/change_images_status")(image_handler.batch_change_status)
+# 更新用户备注
+router.post("/api/admin/update_user_remark")(user_handler.update_user_remark)
 '''管理员相关API END'''
 
 

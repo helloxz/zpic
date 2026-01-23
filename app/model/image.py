@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, String, DateTime,Text,Float,Index
+from sqlalchemy import Integer, String, DateTime,Text,Float,Index,text
 from sqlalchemy.orm import Mapped,mapped_column
 from sqlalchemy.sql import func
 from .conn import Base
@@ -13,6 +13,12 @@ class ImageModel(Base):
         # uid + hash组合索引
         Index("idx_uid_hash", "uid", "hash"),
         Index("idx_uid_album_id", "uid", "album_id"),
+        Index("idx_uid_upload_at", "uid", "upload_at"),
+        Index("idx_uid_is_nsfw", "uid", "is_nsfw"),
+        Index("idx_uid_is_qrcode", "uid", "is_qrcode"),
+        # 使用 text() 写 WHERE 条件，避免引用未定义的类属性
+        Index("idx_nsfw_porn", "upload_at", postgresql_where=text("is_nsfw = 3")),
+        Index("idx_qrcode_true", "upload_at", postgresql_where=text("is_qrcode = 3")),
         {"comment": "图片表"},
     )
 
@@ -23,7 +29,7 @@ class ImageModel(Base):
     thumb_path:Mapped[str|None] = mapped_column(String(64), nullable=True, comment="缩略图存储路径")
     storage_slug:Mapped[str] = mapped_column(String(64), nullable=False, comment="存储策略slug")
     # 图片上传时间
-    upload_at:Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now(), comment="上传时间")
+    upload_at:Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False,index=True, server_default=func.now(), comment="上传时间")
     album_id:Mapped[int] = mapped_column(Integer, default=0,nullable=False, comment="相册ID")
     mime_type:Mapped[str] = mapped_column(String(32), nullable=False, comment="图片MIME类型")
     width:Mapped[int] = mapped_column(Integer, nullable=False, comment="图片宽度")

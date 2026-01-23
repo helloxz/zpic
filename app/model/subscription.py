@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, String, DateTime, Text
+from sqlalchemy import Integer, String, DateTime, Text,Index
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql import func
 from .conn import Base
@@ -11,6 +11,7 @@ from .conn import get_db
 class SubscriptionModel(Base):
     __tablename__ = "zp_subscription"
     __table_args__ = (
+        Index('idx_sub_uid_status_end_at', 'uid', 'status', 'end_at'),
         {"comment": "订阅表"},
     )
 
@@ -29,6 +30,14 @@ class SubscriptionModel(Base):
     # 存储策略
     storage_slug:Mapped[str | None] = mapped_column(String(64), nullable=True, comment="存储策略slug")
     end_at:Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, comment="结束时间")
+    # 状态字段，active, expired, cancelled,作废：superseded
+    status: Mapped[str] = mapped_column(
+        String(16), 
+        nullable=False, 
+        default="active",
+        server_default="active",
+        comment="订阅状态"
+    )
     remark:Mapped[str | None] = mapped_column(Text, nullable=True, comment="备注信息")
 
     # 新增：类方法形式的查询函数，后续注意添加redis缓存

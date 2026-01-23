@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, String, DateTime,Text,Float,Index
+from sqlalchemy import Integer, String, DateTime,Text,Float,Index,text
 from sqlalchemy.orm import Mapped,mapped_column
 from sqlalchemy.sql import func
 from .conn import Base
@@ -31,6 +31,7 @@ class DeletionQueueModel(Base):
         default="pending",  # 状态流转：pending → deleting → success/failed
         index=True
     )
+    size:Mapped[int] = mapped_column(Integer, nullable=False,default=0,server_default=text("0"), comment="图片大小，存储字节")
     role: Mapped[str] = mapped_column(String(20), default="user", nullable=False, comment="用户角色，user普通用户，admin管理员")
     # 删除者IP
     ip: Mapped[str] = mapped_column(String(45), nullable=False, comment="上传者IP地址")

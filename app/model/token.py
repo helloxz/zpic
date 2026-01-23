@@ -11,6 +11,7 @@ class TokenModel(Base):
     __tablename__ = "zp_token"
     __table_args__ = (
         Index("idx_token_uid_status", "uid", "status"),  # 按用户查有效 token
+        Index("idx_token_status_lastused", "status", "last_used_at"),
         {"comment": "API Tokens表"},
     )
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True, comment="主键ID")
@@ -22,6 +23,10 @@ class TokenModel(Base):
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False, comment="更新时间"
+    )
+    # 最近使用时间，便于审计和统计
+    last_used_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=True, comment="最近使用时间"
     )
     # 过期时间，NULL表示永不过期
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True, comment="过期时间（NULL=永不过期）")

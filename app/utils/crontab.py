@@ -12,6 +12,7 @@ from .redis import create_redis_pool, close_redis_pool
 from app.utils.logger import logger
 from app.model.login_log import LoginLogModel
 from app.api.upload import UploadHandler
+from app.api.user_config import UserConfigHandler
 
 class TaskScheduler:
     def __init__(self):
@@ -26,6 +27,11 @@ class TaskScheduler:
         self.scheduler.add_job(self.delete_images, 'interval', minutes=1)
         # 每天凌晨1点执行一次清理登录日志
         self.scheduler.add_job(self.clean_login_logs, 'cron', hour=1, minute=0)
+        # 每天凌晨2点执行一次更新活跃用户存储容量
+        self.scheduler.add_job(self.update_active_user_storage_usage, 'cron', hour=2, minute=0)
+        # 测试更新存储容量，1分钟更新一下
+        # self.scheduler.add_job(self.update_active_user_storage_usage, 'interval', minutes=1)
+
         # 关键：启动调度器
         self.scheduler.start()
         # print("🕒 调度器已启动")
@@ -141,6 +147,11 @@ class TaskScheduler:
             deleted_count = result.rowcount # type: ignore
             logger.info(f"✅ 成功删除 {deleted_count} 条登录日志")
             print(f"✅ 成功删除 {deleted_count} 条登录日志")
+    
+    # 更新活跃用户存储容量
+    async def update_active_user_storage_usage(self):
+        user_config_handler = UserConfigHandler()
+        await user_config_handler.refresh_active_users_storage_bytes()
 
 
 
