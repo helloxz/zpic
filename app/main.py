@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI,Request
 from contextlib import asynccontextmanager
 from .routers import router as my_router
 from .utils.redis import create_redis_pool, close_redis_pool
@@ -7,6 +7,8 @@ from .model.conn import engine, Base
 from .middleware.auth import auth
 # from .utils.crontab import TaskScheduler
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import HTMLResponse
+import os
 # 导入模型，确保后续可以被创建
 # from .model import user
 # from .model import sys_option
@@ -49,3 +51,15 @@ app.add_middleware(
 )
 # 挂载路由
 app.include_router(my_router)
+
+# 404页面，必须放在最后面
+@app.get("/{full_path:path}")
+async def catch_all(request: Request):
+    TEMPLATE_DIR = "app/static/html"
+    try:
+        with open(os.path.join(TEMPLATE_DIR, "404.html"), "r", encoding="utf-8") as f:
+            content = f.read()
+        return HTMLResponse(content=content, status_code=404)
+    except FileNotFoundError:
+        # 保底：如果模板文件丢失，返回简单文本
+        return HTMLResponse(content="<h1>404 Not Found</h1>", status_code=404)

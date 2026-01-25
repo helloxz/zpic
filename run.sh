@@ -27,7 +27,7 @@ runScheduler(){
 }
 
 
-# 启动主进程
+# 启动主进程，用于生产环境
 runMain(){
     # 获取环境变量WORKERS
     WORKERS=${WORKERS}
@@ -44,7 +44,16 @@ runMain(){
     alembic upgrade head
     # 等待1s钟，确保数据库迁移已完成
     sleep 1
-    uvicorn app.main:app --workers ${WORKERS} --host 0.0.0.0 --port 2080 --loop uvloop --http httptools
+    # uvicorn app.main:app --workers ${WORKERS} --host 0.0.0.0 --port 2080 --loop uvloop --http httptools
+    granian app.main:app \
+        --host 0.0.0.0 \
+        --port 2080 \
+        --workers ${WORKERS} \
+        --interface asgi \
+        --loop uvloop \
+        --log-level info \
+        --respawn-failed-workers \
+        --workers-max-rss 512
 }
 
 # 获取第一个参数，如果不存在，则执行下面的命令，如果为dev则执行另外的命令
