@@ -5,7 +5,7 @@ WORKDIR="/opt/zpic"
 # 安装依赖
 install_deps(){
     apt-get update
-    apt-get install -y python3 python3-pip python3-venv procps
+    apt-get install -y python3 python3-pip python3-venv procps libmagic1
     # Pillow-SIMD需要的依赖
     # apt install -y build-essential python3-dev zlib1g-dev libtiff5-dev liblcms2-dev libwebp-dev libfreetype6-dev libjpeg-dev libpng-dev
     # 安装libvips依赖
