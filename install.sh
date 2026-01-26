@@ -7,7 +7,9 @@ install_deps(){
     apt-get update
     apt-get install -y python3 python3-pip python3-venv procps
     # Pillow-SIMD需要的依赖
-    apt install -y build-essential python3-dev zlib1g-dev libtiff5-dev liblcms2-dev libwebp-dev libfreetype6-dev libjpeg-dev libpng-dev
+    # apt install -y build-essential python3-dev zlib1g-dev libtiff5-dev liblcms2-dev libwebp-dev libfreetype6-dev libjpeg-dev libpng-dev
+    # 安装libvips依赖
+    apt-get install -y build-essential pkg-config libvips-dev 
     mkdir -p  ${WORKDIR} && cd ${WORKDIR}
 }
 
@@ -17,7 +19,7 @@ install_python_deps(){
     python3 -m venv myenv
     source myenv/bin/activate
     # 安装 Pillow-SIMD 替代 Pillow
-    CC="cc -mavx2" /opt/zpic/myenv/bin/python -m pip install -U --force-reinstall pillow-simd
+    # CC="cc -mavx2" /opt/zpic/myenv/bin/python -m pip install -U --force-reinstall --no-binary :all: pillow-simd
     /opt/zpic/myenv/bin/python -m pip install -r app/requirements.txt
 }
 

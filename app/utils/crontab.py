@@ -137,10 +137,11 @@ class TaskScheduler:
             print(f"✅ 成功删除 {total_deleted} 张图片")
     # 清理3个月以前的登录日志
     async def clean_login_logs(self):
+        from sqlalchemy import text
         async with get_db() as db:
             result = await db.execute(
                 delete(LoginLogModel).where(
-                    LoginLogModel.login_at < func.now() - func.interval('90 days')
+                    LoginLogModel.login_at < text("now() - make_interval(days => 90)")
                 )
             )
             await db.commit()

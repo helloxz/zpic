@@ -35,6 +35,10 @@ runMain(){
     if [ -z "$WORKERS" ]; then
         WORKERS=1
     fi
+    # 判断WORKERS_MAX_RSS是否存在
+    if [ -z "$WORKERS_MAX_RSS" ]; then
+        WORKERS_MAX_RSS=512
+    fi
     # 启动主进程
     source myenv/bin/activate
     # 等待4s钟，确保数据库服务已启动
@@ -53,7 +57,7 @@ runMain(){
         --loop uvloop \
         --log-level info \
         --respawn-failed-workers \
-        --workers-max-rss 512
+        --workers-max-rss ${WORKERS_MAX_RSS}
 }
 
 # 获取第一个参数，如果不存在，则执行下面的命令，如果为dev则执行另外的命令
