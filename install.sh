@@ -9,7 +9,7 @@ install_deps(){
     # Pillow-SIMD需要的依赖
     # apt install -y build-essential python3-dev zlib1g-dev libtiff5-dev liblcms2-dev libwebp-dev libfreetype6-dev libjpeg-dev libpng-dev
     # 安装libvips依赖
-    apt-get install -y build-essential pkg-config libvips-dev 
+    apt-get install -y build-essential pkg-config libvips-dev libvips42
     mkdir -p  ${WORKDIR} && cd ${WORKDIR}
 }
 
