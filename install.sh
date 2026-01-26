@@ -36,7 +36,9 @@ clean(){
     libwebp-dev \
     libfreetype6-dev \
     libjpeg-dev \
-    libpng-dev
+    libpng-dev \
+    pkg-config \
+    libvips-dev
     apt autoremove -y
     apt-get clean
     pip3 cache purge
