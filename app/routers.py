@@ -117,7 +117,9 @@ router.post("/api/admin/delete_pages")(page_handler.delete_pages)
 # 发送测试邮件
 router.get("/api/admin/send_test_email")(test_handler.send_mail)
 # 获取系统信息
-router.get("/api/admin/get_sys_info")(sys_option_handler.get_sys_info)
+router.get("/api/admin/get_app_info")(sys_option_handler.get_app_info)
+# 获取服务器信息
+router.get("/api/admin/get_server_info")(sys_option_handler.get_server_info)
 # 管理员批量禁用用户
 router.post("/api/admin/disable_users")(user_handler.disable_users)
 router.post("/api/admin/enable_users")(user_handler.enable_users)
@@ -140,6 +142,7 @@ router.get("/dashboard/{name:path}")(html_handler.home)
 router.get("/account/{name:path}")(html_handler.home)
 router.get("/i/{imgid:path}")(html_handler.i)
 router.get("/upload")(html_handler.home)
+router.get("/discover")(html_handler.home)
 router.get("/pricing")(html_handler.home)
 router.get("/pay/success")(html_handler.home)
 router.get("/api/sitemap")(html_handler.sitemap_txt)
@@ -193,6 +196,8 @@ router.get("/api/user/get_tokens")(token_handler.get_tokens)
 router.post("/api/user/change_token_status")(token_handler.change_token_status)
 # 更换token内容
 router.post("/api/user/change_token")(token_handler.change_token)
+# 展示最近的图片
+router.post("/api/user/recent_images")(image_handler.get_recent_images)
 
 ### 特殊API
 router.post("/api/v3/upload")(upload_handler.upload_v3)
