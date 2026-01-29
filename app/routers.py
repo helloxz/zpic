@@ -62,6 +62,8 @@ router.post("/api/init_admin")(user_handler.init_admin)
 router.get("/api/get_public_config")(sys_option_handler.get_public_config)
 # 获取单个图片信息
 router.post("/api/image_info/{imgid}")(image_handler.get_image_by_imgid)
+# 获取可用支付方式
+router.get("/api/get_payment_methods")(pay_handler.get_payment_methods)
 
 '''
 管理员相关API
