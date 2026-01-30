@@ -1,0 +1,12 @@
+import{ai as C,A as v,aj as a,l as x,d as w,p as z,q as E,x as s,D as y,E as h,G as R}from"./index.2026013005.js";import{i as T}from"./user-CENlSkqE.js";let S=!1;function P(){if(C&&window.CSS&&!S&&(S=!0,"registerProperty"in window?.CSS))try{CSS.registerProperty({name:"--n-color-start",syntax:"<color>",inherits:!1,initialValue:"#0000"}),CSS.registerProperty({name:"--n-color-end",syntax:"<color>",inherits:!1,initialValue:"#0000"})}catch{}}function I(t){const{primaryColor:r,successColor:i,warningColor:n,errorColor:l,infoColor:c,fontWeightStrong:d}=t;return{fontWeight:d,rotate:"252deg",colorStartPrimary:a(r,{alpha:.6}),colorEndPrimary:r,colorStartInfo:a(c,{alpha:.6}),colorEndInfo:c,colorStartWarning:a(n,{alpha:.6}),colorEndWarning:n,colorStartError:a(l,{alpha:.6}),colorEndError:l,colorStartSuccess:a(i,{alpha:.6}),colorEndSuccess:i}}const $={common:v,self:I},k=x("gradient-text",`
+ display: inline-block;
+ font-weight: var(--n-font-weight);
+ -webkit-background-clip: text;
+ background-clip: text;
+ color: #0000;
+ white-space: nowrap;
+ background-image: linear-gradient(var(--n-rotate), var(--n-color-start) 0%, var(--n-color-end) 100%);
+ transition:
+ --n-color-start .3s var(--n-bezier),
+ --n-color-end .3s var(--n-bezier);
+`),B=Object.assign(Object.assign({},y.props),{size:[String,Number],fontSize:[String,Number],type:{type:String,default:"primary"},color:[Object,String],gradient:[Object,String]}),O=w({name:"GradientText",props:B,setup(t){P();const{mergedClsPrefixRef:r,inlineThemeDisabled:i}=E(t),n=s(()=>{const{type:e}=t;return e==="danger"?"error":e}),l=s(()=>{let e=t.size||t.fontSize;return e&&(e=T(e)),e||void 0}),c=s(()=>{const e=t.color||t.gradient;if(typeof e=="string")return e;if(e){const g=e.deg||0,f=e.from,u=e.to;return`linear-gradient(${g}deg, ${f} 0%, ${u} 100%)`}}),d=y("GradientText","-gradient-text",k,$,t,r),m=s(()=>{const{value:e}=n,{common:{cubicBezierEaseInOut:g},self:{rotate:f,[h("colorStart",e)]:u,[h("colorEnd",e)]:p,fontWeight:b}}=d.value;return{"--n-bezier":g,"--n-rotate":f,"--n-color-start":u,"--n-color-end":p,"--n-font-weight":b}}),o=i?R("gradient-text",s(()=>n.value[0]),m,t):void 0;return{mergedClsPrefix:r,compatibleType:n,styleFontSize:l,styleBgImage:c,cssVars:i?void 0:m,themeClass:o?.themeClass,onRender:o?.onRender}},render(){const{mergedClsPrefix:t,onRender:r}=this;return r?.(),z("span",{class:[`${t}-gradient-text`,`${t}-gradient-text--${this.compatibleType}-type`,this.themeClass],style:[{fontSize:this.styleFontSize,backgroundImage:this.styleBgImage},this.cssVars]},this.$slots)}});export{O as _};

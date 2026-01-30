@@ -154,6 +154,7 @@ router.get("/api/get/recent_pages")(page_handler.get_recent_pages)
 router.get("/page/{slug:path}")(html_handler.home)
 router.get("/vip/{name:path}")(html_handler.old_route_redirect)
 router.get("/ads.txt")(html_handler.ads_txt)
+router.get("/robots.txt")(html_handler.robots_txt)
 '''
 用户相关API
 '''
