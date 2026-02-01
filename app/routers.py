@@ -37,7 +37,7 @@ token_handler = TokenHandler()
 router = APIRouter()
 
 router.get("/test/en")(test_handler.en)
-# router.get("/test/de")(sys_option_handler.get_license_info)
+router.get("/test/de")(test_handler.de)
 
 # 用户请求邮箱验证码
 router.post("/api/get_email_code")(user_handler.get_email_code)
