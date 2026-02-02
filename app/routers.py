@@ -131,6 +131,10 @@ router.post("/api/admin/delete_storage")(storage_handler.delete_storage)
 router.post("/api/admin/change_images_status")(image_handler.batch_change_status)
 # 更新用户备注
 router.post("/api/admin/update_user_remark")(user_handler.update_user_remark)
+# 手动添加订阅
+router.post("/api/admin/add_subscription")(subscription_handler.add_subscription)
+# 删除单个套餐
+router.post("/api/admin/delete_plan")(plan_handler.delete_plan)
 '''管理员相关API END'''
 
 
