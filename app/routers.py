@@ -36,8 +36,8 @@ test_handler = TestHandler()
 token_handler = TokenHandler()
 router = APIRouter()
 
-router.get("/test/en")(test_handler.en)
-router.get("/test/de")(test_handler.de)
+# router.get("/test/en")(test_handler.en)
+# router.get("/test/de")(test_handler.de)
 
 # 用户请求邮箱验证码
 router.post("/api/get_email_code")(user_handler.get_email_code)
@@ -135,6 +135,8 @@ router.post("/api/admin/update_user_remark")(user_handler.update_user_remark)
 router.post("/api/admin/add_subscription")(subscription_handler.add_subscription)
 # 删除单个套餐
 router.post("/api/admin/delete_plan")(plan_handler.delete_plan)
+# 管理员批量添加用户
+router.post("/api/admin/add_users")(user_handler.add_users)
 '''管理员相关API END'''
 
 
