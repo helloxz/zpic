@@ -5,7 +5,7 @@ from threading import Lock
 
 # 全局配置文件路径
 CONFIG_PATH = "app/data/config.toml"
-VERSION = "1.1.3"
+VERSION = "1.1.4"
 
 class Config:
     _instance = None

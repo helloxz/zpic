@@ -36,7 +36,7 @@ test_handler = TestHandler()
 token_handler = TokenHandler()
 router = APIRouter()
 
-# router.get("/test/en")(test_handler.en)
+router.get("/test/en")(test_handler.en)
 # router.get("/test/de")(test_handler.de)
 
 # 用户请求邮箱验证码

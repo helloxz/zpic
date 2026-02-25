@@ -13,6 +13,7 @@ from app.utils.logger import logger
 from app.model.login_log import LoginLogModel
 from app.api.upload import UploadHandler
 from app.api.user_config import UserConfigHandler
+from app.api.notifier import NotifierHandler
 
 class TaskScheduler:
     def __init__(self):
@@ -23,6 +24,10 @@ class TaskScheduler:
     async def start(self):
         # 初始化Redis连接
         await create_redis_pool()
+        upload_handler = UploadHandler()
+        notifier_handler = NotifierHandler()
+        # 每隔10s执行一次
+        self.scheduler.add_job(upload_handler.process_nsfw, 'interval', seconds=10)
         # 每隔1分钟执行一次
         self.scheduler.add_job(self.delete_images, 'interval', minutes=1)
         # 每天凌晨1点执行一次清理登录日志
@@ -31,6 +36,12 @@ class TaskScheduler:
         self.scheduler.add_job(self.update_active_user_storage_usage, 'cron', hour=2, minute=0)
         # 测试更新存储容量，1分钟更新一下
         # self.scheduler.add_job(self.update_active_user_storage_usage, 'interval', minutes=1)
+
+
+        # 每个月2号，凌晨8点执行一次发送
+        self.scheduler.add_job(notifier_handler.send_subs_expiry, 'cron', day=2, hour=8, minute=0)
+        # 测试订阅发送，每隔2分钟执行一次
+        # self.scheduler.add_job(notifier_handler.send_subs_expiry, 'interval', minutes = 2)
 
         # 关键：启动调度器
         self.scheduler.start()
