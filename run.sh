@@ -57,7 +57,8 @@ runMain(){
         --loop uvloop \
         --log-level info \
         --respawn-failed-workers \
-        --workers-max-rss ${WORKERS_MAX_RSS}
+        --workers-max-rss ${WORKERS_MAX_RSS} \
+        --workers-kill-timeout 60
 }
 
 # 获取第一个参数，如果不存在，则执行下面的命令，如果为dev则执行另外的命令

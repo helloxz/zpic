@@ -53,3 +53,18 @@ class ImageModel(Base):
                 select(cls).where(cls.uid == uid, cls.hash == hash)
             )
             return result.scalars().first()
+        
+    # 写一个函数，根据元数据查询图片总数
+    @classmethod
+    async def count_images(cls):
+        async with get_db() as db:
+            '''
+            根据元数据查询，比如：
+            SELECT reltuples::bigint AS estimate 
+            FROM pg_class 
+            WHERE relname = 'zp_image';
+            '''
+            result = await db.execute(
+                text("SELECT reltuples::bigint AS estimate FROM pg_class WHERE relname = 'zp_image';")
+            )
+            return result.scalar()
