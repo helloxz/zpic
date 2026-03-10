@@ -25,6 +25,7 @@ from app.model.user import UserModel
 from app.model.login_log import LoginLogModel
 from app.model.page import PageModel
 from app.model.token import TokenModel
+from app.model.redeem_code import RedeemCodeModel
 
 # 强制转为同步 URL（如果原 URL 是 async 的）
 sync_database_url = SQLALCHEMY_DATABASE_URL

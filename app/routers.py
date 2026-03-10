@@ -16,6 +16,7 @@ from app.api.html import HtmlHandler
 from app.api.test import TestHandler
 from app.api.admin.page import PageHandler
 from app.api.token import TokenHandler
+from app.api.admin.redeem_code import RedeemCodeHandler
 
 index_handler = IndexHandler()
 user_handler = UserHandler()
@@ -34,6 +35,7 @@ html_handler = HtmlHandler()
 page_handler = PageHandler()
 test_handler = TestHandler()
 token_handler = TokenHandler()
+redeem_code_handler = RedeemCodeHandler()
 router = APIRouter()
 
 router.get("/test/en")(test_handler.en)
@@ -137,6 +139,10 @@ router.post("/api/admin/add_subscription")(subscription_handler.add_subscription
 router.post("/api/admin/delete_plan")(plan_handler.delete_plan)
 # 管理员批量添加用户
 router.post("/api/admin/add_users")(user_handler.add_users)
+# 获取兑换码列表
+router.post("/api/admin/get_redeem_codes")(redeem_code_handler.get_redeem_codes)
+# 批量生成兑换码
+router.post("/api/admin/create_redeem_codes")(redeem_code_handler.create_redeem_codes)
 '''管理员相关API END'''
 
 
@@ -207,6 +213,10 @@ router.post("/api/user/change_token_status")(token_handler.change_token_status)
 router.post("/api/user/change_token")(token_handler.change_token)
 # 展示最近的图片
 router.post("/api/user/recent_images")(image_handler.get_recent_images)
+# 查询兑换码
+router.post("/api/user/get_redeem_code_plan")(redeem_code_handler.get_redeem_code_plan)
+# 使用兑换码
+router.post("/api/user/use_redeem_code")(redeem_code_handler.use_redeem_code)
 
 ### 特殊API
 router.post("/api/v3/upload")(upload_handler.upload_v3)

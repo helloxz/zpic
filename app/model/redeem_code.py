@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, String, DateTime,Text,Float,Index
+from sqlalchemy import Integer, String, DateTime,Text,Float,Index,CheckConstraint
 from sqlalchemy.orm import Mapped,mapped_column
 from sqlalchemy.sql import func
 from .conn import Base
@@ -7,12 +7,19 @@ from datetime import datetime
 from sqlalchemy import select
 from .conn import get_db
 
-class RedeemCode(Base):
+class RedeemCodeModel(Base):
     __tablename__ = 'zp_redeem_code'
+    __table_args__ = (
+        CheckConstraint(
+            "status IN ('unused', 'used', 'expired', 'disabled')",
+            name='check_redeem_code_status'
+        ),
+        # 其他索引...
+    )
 
     id:Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     # 16位唯一兑换码，只能是大写，支持字母、数字-和_
-    code: Mapped[str] = mapped_column(String(16), unique=True, nullable=False)
+    code: Mapped[str] = mapped_column(String(16), unique=True,index=True, nullable=False)
     # 对应套餐ID
     plan_id:Mapped[int] = mapped_column(Integer, nullable=False)
     # 兑换码状态，状态 (unused, used, expired, disabled)

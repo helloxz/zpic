@@ -6,6 +6,7 @@ from sqlalchemy.dialects.postgresql import JSONB
 from datetime import datetime
 from sqlalchemy import select
 from .conn import get_db
+from app.utils.redis import get_redis_client
 
 class ImageModel(Base):
     __tablename__ = "zp_image"
@@ -19,6 +20,8 @@ class ImageModel(Base):
         # 使用 text() 写 WHERE 条件，避免引用未定义的类属性
         Index("idx_nsfw_porn", "upload_at", postgresql_where=text("is_nsfw = 3")),
         Index("idx_qrcode_true", "upload_at", postgresql_where=text("is_qrcode = 3")),
+        # 新增：专门优化 "WHERE is_nsfw = 0 ORDER BY id DESC" 的查询
+        Index("idx_nsfw_id_desc", "is_nsfw", "id", postgresql_ops={"id": "desc"}),
         {"comment": "图片表"},
     )
 
@@ -55,16 +58,35 @@ class ImageModel(Base):
             return result.scalars().first()
         
     # 写一个函数，根据元数据查询图片总数
+    # @classmethod
+    # async def count_images(cls):
+    #     async with get_db() as db:
+    #         '''
+    #         根据元数据查询，比如：
+    #         SELECT reltuples::bigint AS estimate 
+    #         FROM pg_class 
+    #         WHERE relname = 'zp_image';
+    #         '''
+    #         result = await db.execute(
+    #             text("SELECT reltuples::bigint AS estimate FROM pg_class WHERE relname = 'zp_image';")
+    #         )
+    #         return result.scalar()
+    
+    # 写一个函数，根查询图片总数，先从redis缓存中获取，如果没有再查询数据库，并将结果缓存到redis中，设置过期时间为4小时
     @classmethod
     async def count_images(cls):
+        redis = await get_redis_client()
+        key = "SYS:IMAGE:COUNT"
+        # 尝试从redis缓存中获取
+        count = await redis.get(key)
+        if count is not None:
+            # print("从redis缓存中获取图片总数")
+            return int(count)
         async with get_db() as db:
-            '''
-            根据元数据查询，比如：
-            SELECT reltuples::bigint AS estimate 
-            FROM pg_class 
-            WHERE relname = 'zp_image';
-            '''
-            result = await db.execute(
-                text("SELECT reltuples::bigint AS estimate FROM pg_class WHERE relname = 'zp_image';")
-            )
-            return result.scalar()
+            # 查询数据库获取图片总数
+            query = select(func.count()).select_from(cls)
+            result = await db.execute(query)
+            count = result.scalar()
+            # 将结果缓存到redis中，设置过期时间为4小时
+            await redis.set(key, str(count), ex=4*60*60)
+            return count
