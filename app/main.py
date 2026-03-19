@@ -7,7 +7,7 @@ from .model.conn import engine, Base
 from .middleware.auth import auth
 # from .utils.crontab import TaskScheduler
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse,ORJSONResponse
 import os
 # 导入模型，确保后续可以被创建
 # from .model import user
@@ -35,7 +35,13 @@ async def lifespan(app: FastAPI):
     # task_scheduler.shutdown()
     await close_redis_pool()
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(
+    lifespan=lifespan,
+    docs_url=None,        # 关闭 Swagger UI (/docs)
+    redoc_url=None,       # 关闭 ReDoc (/redoc)
+    openapi_url=None,     # 关闭 OpenAPI JSON (/openapi.json)
+    default_response_class=ORJSONResponse,  # 全局使用 ORJSONResponse，提高性能，降低内存占用
+)
 
 app.middleware("http")(auth)  # 添加新的鉴权中间件
 

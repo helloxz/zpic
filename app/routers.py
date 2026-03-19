@@ -220,6 +220,7 @@ router.post("/api/user/use_redeem_code")(redeem_code_handler.use_redeem_code)
 
 ### 特殊API
 router.post("/api/v3/upload")(upload_handler.upload_v3)
+router.post("/api/v3/delete_images")(delete_image_handler.api_delete_images)
 router.get("/api/v3/album_list")(album_handler.v3_album_list)
 router.post("/api/v2/upload")(upload_handler.upload_v2)
 
