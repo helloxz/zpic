@@ -217,6 +217,8 @@ router.post("/api/user/recent_images")(image_handler.get_recent_images)
 router.post("/api/user/get_redeem_code_plan")(redeem_code_handler.get_redeem_code_plan)
 # 使用兑换码
 router.post("/api/user/use_redeem_code")(redeem_code_handler.use_redeem_code)
+# 用户批量删除图片
+router.post("/api/user/batch_delete_images")(delete_image_handler.batch_delete_images)
 
 ### 特殊API
 router.post("/api/v3/upload")(upload_handler.upload_v3)
