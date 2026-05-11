@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta, timezone
+
 # import asyncio
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from app.model.image import ImageModel
@@ -148,11 +150,11 @@ class TaskScheduler:
             print(f"✅ 成功删除 {total_deleted} 张图片")
     # 清理3个月以前的登录日志
     async def clean_login_logs(self):
-        from sqlalchemy import text
+        cutoff_time = datetime.now(timezone.utc) - timedelta(days=90)
         async with get_db() as db:
             result = await db.execute(
                 delete(LoginLogModel).where(
-                    LoginLogModel.login_at < text("now() - make_interval(days => 90)")
+                    LoginLogModel.login_at < cutoff_time
                 )
             )
             await db.commit()
@@ -186,4 +188,3 @@ if __name__ == "__main__":
         asyncio.run(main())
     except KeyboardInterrupt:
         print("🛑 程序被手动中断")
-

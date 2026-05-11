@@ -28,6 +28,9 @@ alembic upgrade head
 
 # 自定义 workers 数量运行
 WORKERS=4 bash run.sh
+
+# 路由
+app/routers.ts
 ```
 
 ### 前端 (Vue.js 3 + TypeScript)

@@ -1,11 +1,13 @@
-import toml
 from pathlib import Path
-from typing import Any, Dict
 from threading import Lock
+from typing import Any, Dict
+
+import toml
 
 # 全局配置文件路径
 CONFIG_PATH = "app/data/config.toml"
-VERSION = "1.2.3"
+VERSION = "1.2.5"
+
 
 class Config:
     _instance = None
@@ -24,14 +26,14 @@ class Config:
     def _load_config(self):
         """从文件加载配置到内存"""
         if self._config_path.exists():
-            with open(self._config_path, 'r', encoding='utf-8') as f:
+            with open(self._config_path, "r", encoding="utf-8") as f:
                 self._config = toml.load(f)
         else:
             self._config = {}
 
     def get(self, key: str, default=None) -> Any:
         """支持点分隔的嵌套键，如 'database.host'"""
-        keys = key.split('.')
+        keys = key.split(".")
         value = self._config
         try:
             for k in keys:
@@ -42,7 +44,7 @@ class Config:
 
     def set(self, key: str, value: Any):
         """设置配置值（支持嵌套）"""
-        keys = key.split('.')
+        keys = key.split(".")
         target = self._config
         for k in keys[:-1]:
             if k not in target:
@@ -52,7 +54,7 @@ class Config:
 
     def save(self):
         """将内存中的配置写回文件"""
-        with open(self._config_path, 'w', encoding='utf-8') as f:
+        with open(self._config_path, "w", encoding="utf-8") as f:
             toml.dump(self._config, f)
 
     def reload(self):
@@ -62,6 +64,7 @@ class Config:
     @property
     def config(self) -> Dict:
         return self._config.copy()  # 返回副本，避免外部直接修改
+
 
 # 全局实例（懒加载，线程安全）
 config = Config()
